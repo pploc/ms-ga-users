@@ -29,17 +29,11 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	id, err := uuid.Parse(*req.Id)
-	if err != nil {
-		utils.ErrResponse(c, http.StatusBadRequest, "invalid user id format")
-		return
-	}
-
 	user := &entity.User{
-		ID:        id,
-		FirstName: *req.FirstName,
-		LastName:  *req.LastName,
-		Email:     *req.Email,
+		ID:        uuid.UUID(req.Id),
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		Email:     string(req.Email),
 		Phone:     req.Phone,
 	}
 

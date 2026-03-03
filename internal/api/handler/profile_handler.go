@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"time"
 
 	"ms-ga-user/internal/api/generated"
 	"ms-ga-user/internal/domain/entity"
@@ -59,10 +58,8 @@ func (h *ProfileHandler) UpdateProfile(c *gin.Context) {
 		EmergencyContactPhone: req.EmergencyContactPhone,
 	}
 
-	if req.HireDate != nil && *req.HireDate != "" {
-		if parsed, err := time.Parse(time.DateOnly, *req.HireDate); err == nil {
-			profile.HireDate = &parsed
-		}
+	if req.HireDate != nil {
+		profile.HireDate = &req.HireDate.Time
 	}
 
 	var addresses []*entity.UserAddress
@@ -78,9 +75,7 @@ func (h *ProfileHandler) UpdateProfile(c *gin.Context) {
 				IsPrimary: *a.IsPrimary,
 			}
 			if a.Id != nil {
-				if id, err := uuid.Parse(*a.Id); err == nil {
-					addr.ID = id
-				}
+				addr.ID = uuid.UUID(*a.Id)
 			} else {
 				addr.ID = uuid.New()
 			}
