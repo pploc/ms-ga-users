@@ -1,4 +1,4 @@
-.PHONY: build run test clean docker-build docker-run tidy db-up
+.PHONY: build run test clean docker-build docker-run tidy fmt lint db-up
 
 APP_NAME=ms-ga-user
 PORT=8083
@@ -23,3 +23,10 @@ docker-build:
 
 docker-run:
 	docker run -p $(PORT):$(PORT) --env-file .env $(APP_NAME)
+
+fmt:
+	gofmt -w .
+	goimports -w ./...
+
+lint: fmt
+	gofmt -l . | grep . && exit 1 || true
